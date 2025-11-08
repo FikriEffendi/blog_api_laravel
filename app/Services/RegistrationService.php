@@ -29,7 +29,7 @@ class RegistrationService
             ]
         );
 
-        Mail::to($email)->send(new OtpMail($code, 1));
+        Mail::to($email)->queue(new OtpMail($code, 1));
     }
 
     public function completeRegistration(string $email, string $otp): array
@@ -79,6 +79,6 @@ class RegistrationService
             'otp_expires_at' => $expiresAt,
         ]);
 
-        Mail::to($email)->send(new OtpMail($code, 1));
+        Mail::to($email)->queue(new OtpMail($code, 1));
     }
 }

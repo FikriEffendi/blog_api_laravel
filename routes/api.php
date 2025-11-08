@@ -4,6 +4,9 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * Auth Routes
+ */
 Route::post('auth/register', [AuthController::class, 'register'])
     ->middleware('throttle:otp');
 Route::post('auth/register/resend', [AuthController::class, 'resend'])
