@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ConfirmOtpRequest;
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResendOtpRequest;
 use App\Models\RegistrationOtp;
@@ -58,6 +59,32 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'OTP baru telah dikirim ke email.',
+        ]);
+    }
+
+    public function login(LoginRequest $request): JsonResponse
+    {
+        $request->validated();
+
+        $user = User::where('email', $request->email)->firstOrFail();
+
+        $token = $user->createToken('auth')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login berhasil.',
+            'token' => $token,
+            'user' => $user,
+        ]);
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $token = $request->user()->currentAccessToken();
+
+        $token->delete();
+
+        return response()->json([
+            'message' => 'Logout berhasil.',
         ]);
     }
 }
