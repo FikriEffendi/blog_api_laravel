@@ -32,13 +32,9 @@ class RegistrationService
         Mail::to($email)->queue(new OtpMail($code, 1));
     }
 
-    public function completeRegistration(string $email, string $otp): array
+    public function completeRegistration(string $email): array
     {
         $pending = RegistrationOtp::where('email', $email)->firstOrFail();
-
-        if ($pending->otp_code !== $otp) {
-            throw new InvalidArgumentException('Kode OTP salah.');
-        }
 
         if ($pending->otp_expires_at->isPast()) {
             throw new InvalidArgumentException('Kode OTP kedaluwarsa.');

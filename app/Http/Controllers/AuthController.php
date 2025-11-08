@@ -41,7 +41,6 @@ class AuthController extends Controller
 
         $result = $this->registrationService->completeRegistration(
             $request->email,
-            $request->otp,
         );
 
         return response()->json([

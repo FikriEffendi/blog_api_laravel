@@ -24,7 +24,7 @@ class ConfirmOtpRequest extends FormRequest
         return [
             //
             'email' => ['required', 'email', 'exists:registration_otps,email'],
-            'otp' => ['required', 'digits:6'],
+            'otp' => ['required', 'digits:6', 'exists:registration_otps,otp_code'],
         ];
     }
 }
