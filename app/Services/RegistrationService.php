@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OtpMail;
+use Illuminate\Support\Facades\Cache;
 
 class RegistrationService
 {
@@ -59,5 +60,25 @@ class RegistrationService
             'token' => $token,
             'user' => $user,
         ];
+    }
+
+    public function resendOtp(string $email): void
+    {
+        $pending = RegistrationOtp::where('email', $email)->firstOrFail();
+
+        // Hanya boleh resend jika OTP sebelumnya sudah expired
+        if ($pending->otp_expires_at && !$pending->otp_expires_at->isPast()) {
+            throw new InvalidArgumentException('OTP belum kedaluwarsa. Harap tunggu hingga masa berlaku berakhir sebelum meminta OTP baru.');
+        }
+
+        $code = str_pad((string) random_int(0, 10 ** 6 - 1), 6, '0', STR_PAD_LEFT);
+        $expiresAt = Carbon::now()->addMinutes(1);
+
+        $pending->update([
+            'otp_code' => $code,
+            'otp_expires_at' => $expiresAt,
+        ]);
+
+        Mail::to($email)->send(new OtpMail($code, 1));
     }
 }

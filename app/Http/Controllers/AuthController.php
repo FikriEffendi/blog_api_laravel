@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ConfirmOtpRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ResendOtpRequest;
 use App\Models\RegistrationOtp;
 use App\Models\User;
 use App\Services\OtpService;
@@ -12,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 
 class AuthController extends Controller
 {
@@ -45,6 +47,17 @@ class AuthController extends Controller
             'message' => 'Registrasi berhasil.',
             'token' => $result['token'],
             'user' => $result['user'],
+        ]);
+    }
+
+    public function resend(ResendOtpRequest $request): JsonResponse
+    {
+        $request->validated();
+
+        $this->registrationService->resendOtp($request->email);
+
+        return response()->json([
+            'message' => 'OTP baru telah dikirim ke email.',
         ]);
     }
 }
