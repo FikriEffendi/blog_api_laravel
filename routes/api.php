@@ -7,17 +7,17 @@ use Illuminate\Support\Facades\Route;
 /**
  * Auth Routes
  */
-Route::post('auth/register', [AuthController::class, 'register'])
-    ->middleware('throttle:otp');
-Route::post('auth/register/resend', [AuthController::class, 'resend'])
-    ->middleware('throttle:otp');
-Route::post('auth/register/confirm', [AuthController::class, 'confirm']);
-Route::post('auth/login', [AuthController::class, 'login'])
-    ->middleware('throttle:login');
-Route::post('auth/logout', [AuthController::class, 'logout'])
-    ->middleware('auth:sanctum');
-
-
+Route::prefix('auth')->controller(AuthController::class)->name('auth.')->group(function () {
+    Route::post('register', 'register')->name('register')
+        ->middleware('throttle:otp');
+    Route::post('register/resend', 'resend')->name('register.resend')
+        ->middleware('throttle:otp');
+    Route::post('register/confirm', 'confirm')->name('register.confirm');
+    Route::post('login', 'login')->name('login')
+        ->middleware('throttle:login');
+    Route::post('logout', 'logout')->name('logout')
+        ->middleware('auth:sanctum');
+});
 
 Route::get('/user', function (Request $request) {
     return $request->user();
