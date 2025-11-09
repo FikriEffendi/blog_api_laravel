@@ -62,11 +62,6 @@ class RegistrationService
     {
         $pending = RegistrationOtp::where('email', $email)->firstOrFail();
 
-        // Hanya boleh resend jika OTP sebelumnya sudah expired
-        if ($pending->otp_expires_at && !$pending->otp_expires_at->isPast()) {
-            throw new InvalidArgumentException('OTP belum kedaluwarsa. Harap tunggu hingga masa berlaku berakhir sebelum meminta OTP baru.');
-        }
-
         $code = str_pad((string) random_int(0, 10 ** 6 - 1), 6, '0', STR_PAD_LEFT);
         $expiresAt = Carbon::now()->addMinutes(1);
 
@@ -78,7 +73,7 @@ class RegistrationService
         Mail::to($email)->queue(new OtpMail($code, 1));
     }
 
-    public function login(string $email, string $password): array
+    public function login(string $email): array
     {
         $user = User::where('email', $email)->firstOrFail();
 

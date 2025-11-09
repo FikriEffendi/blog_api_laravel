@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\RegistrationOtp;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class ResendOtpRequest extends FormRequest
 {
@@ -23,6 +25,24 @@ class ResendOtpRequest extends FormRequest
     {
         return [
             'email' => 'required|email|exists:registration_otps,email',
+        ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                $email = $this->input('email');
+
+                $pending = RegistrationOtp::where('email', $email)->firstOrFail();
+
+                if ($pending->otp_expires_at && !$pending->otp_expires_at->isPast()) {
+                    $validator->errors()->add(
+                        'email',
+                        'OTP belum kedaluwarsa. Harap tunggu hingga masa berlaku berakhir sebelum meminta OTP baru.'
+                    );
+                }
+            },
         ];
     }
 }

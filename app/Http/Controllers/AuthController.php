@@ -67,7 +67,6 @@ class AuthController extends Controller
 
         $result = $this->registrationService->login(
             $request->email,
-            $request->password,
         );
 
         return response()->json([
