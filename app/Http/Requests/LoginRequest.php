@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Validator;
 
 class LoginRequest extends FormRequest
 {
@@ -24,6 +27,22 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'email', 'exists:users,email'],
             'password' => ['required', 'string', 'min:8'],
+        ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                $email = $this->input('email');
+                $password = $this->input('password');
+
+                $user = User::where('email', $email)->firstOrFail();
+
+                if ($user && !Hash::check($password, $user->password)) {
+                    $validator->errors()->add('password', 'Password salah.');
+                }
+            },
         ];
     }
 }

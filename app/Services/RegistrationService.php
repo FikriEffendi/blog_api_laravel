@@ -82,10 +82,6 @@ class RegistrationService
     {
         $user = User::where('email', $email)->firstOrFail();
 
-        if (!Hash::check($password, $user->password)) {
-            throw new InvalidArgumentException('Password salah.');
-        }
-
         $token = $user->createToken('auth')->plainTextToken;
 
         return [
