@@ -65,14 +65,15 @@ class AuthController extends Controller
     {
         $request->validated();
 
-        $user = User::where('email', $request->email)->firstOrFail();
-
-        $token = $user->createToken('auth')->plainTextToken;
+        $result = $this->registrationService->login(
+            $request->email,
+            $request->password,
+        );
 
         return response()->json([
             'message' => 'Login berhasil.',
-            'token' => $token,
-            'user' => $user,
+            'token' => $result['token'],
+            'user' => $result['user'],
         ]);
     }
 

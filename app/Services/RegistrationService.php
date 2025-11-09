@@ -77,4 +77,20 @@ class RegistrationService
 
         Mail::to($email)->queue(new OtpMail($code, 1));
     }
+
+    public function login(string $email, string $password): array
+    {
+        $user = User::where('email', $email)->firstOrFail();
+
+        if (!Hash::check($password, $user->password)) {
+            throw new InvalidArgumentException('Password salah.');
+        }
+
+        $token = $user->createToken('auth')->plainTextToken;
+
+        return [
+            'token' => $token,
+            'user' => $user,
+        ];
+    }
 }
