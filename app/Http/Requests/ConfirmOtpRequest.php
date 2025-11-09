@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\RegistrationOtp;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class ConfirmOtpRequest extends FormRequest
 {
@@ -25,6 +27,21 @@ class ConfirmOtpRequest extends FormRequest
             //
             'email' => ['required', 'email', 'exists:registration_otps,email'],
             'otp' => ['required', 'digits:6', 'exists:registration_otps,otp_code'],
+        ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                $email = $this->input('email');
+
+                $pending = RegistrationOtp::where('email', $email)->first();
+
+                if ($pending && $pending->otp_expires_at && $pending->otp_expires_at->isPast()) {
+                    $validator->errors()->add('otp', 'Kode OTP kedaluwarsa.');
+                }
+            },
         ];
     }
 }

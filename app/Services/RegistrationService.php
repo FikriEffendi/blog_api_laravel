@@ -36,10 +36,6 @@ class RegistrationService
     {
         $pending = RegistrationOtp::where('email', $email)->firstOrFail();
 
-        if ($pending->otp_expires_at->isPast()) {
-            throw new InvalidArgumentException('Kode OTP kedaluwarsa.');
-        }
-
         $user = new User([
             'name' => $pending->name,
             'email' => $pending->email,
