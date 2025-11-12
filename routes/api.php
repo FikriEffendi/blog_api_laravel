@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,14 @@ Route::prefix('auth')->controller(AuthController::class)->name('auth.')->group(f
     Route::post('logout', 'logout')->name('logout')
         ->middleware('auth:sanctum');
 });
+
+/**
+ * Post Routes
+ */
+Route::apiResource('posts', PostController::class)
+    ->middleware('auth:sanctum');
+
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();

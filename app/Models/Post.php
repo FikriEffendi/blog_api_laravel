@@ -14,7 +14,6 @@ class Post extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_uuid',
         'title',
         'content',
         'slug',
