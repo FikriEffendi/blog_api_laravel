@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
+use App\Services\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 class PostController extends Controller
 {
+    public function __construct(private PostService $postService) {}
     /**
      * Display a listing of the resource.
      */
@@ -31,12 +33,8 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         $validated = $request->validated();
-        $post = $request->user()->posts()->create([
-            'title' => $validated['title'],
-            'content' => $validated['body'],
-            'published_at' => Carbon::now()
-        ]);
-        $post->categories()->sync($validated['categories']);
+
+        $this->postService->create($request->user(), $validated);
 
         return response()->json(['message' => 'Post berhasil dibuat'], 201);
     }
