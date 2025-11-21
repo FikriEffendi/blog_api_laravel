@@ -18,7 +18,6 @@ class PostCollection extends ResourceCollection
             'data' => $this->collection->map(function ($post) {
                 return [
                     'post' => new PostResource($post),
-                    'user' => new UserResource($post->user),
                 ];
             }),
         ];
