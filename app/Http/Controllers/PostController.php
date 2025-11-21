@@ -38,18 +38,13 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        Gate::authorize('view', $post);
-
         return new PostResource($post);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+    public function update(Request $request, string $id) {}
 
     /**
      * Remove the specified resource from storage.

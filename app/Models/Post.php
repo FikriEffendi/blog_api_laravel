@@ -29,6 +29,16 @@ class Post extends Model
         'published_at' => 'datetime',
     ];
 
+    /**
+
+     * Get the route key for the model.
+
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_uuid', 'uuid');
