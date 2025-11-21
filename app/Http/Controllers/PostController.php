@@ -18,7 +18,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        Post::latest()->paginate(10)->toResourceCollection();
     }
 
     /**
@@ -36,21 +36,11 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Post $post)
     {
-        $post = Post::findOrFail($id);
-
         Gate::authorize('view', $post);
 
         return new PostResource($post);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**
