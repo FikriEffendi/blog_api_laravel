@@ -24,7 +24,8 @@ Route::prefix('auth')->controller(AuthController::class)->name('auth.')->group(f
  * Post Routes
  */
 Route::apiResource('posts', PostController::class)
-    ->middleware('auth:sanctum');
+    ->middleware('auth:sanctum')
+    ->parameters(['posts' => 'uuid']);
 
 
 
