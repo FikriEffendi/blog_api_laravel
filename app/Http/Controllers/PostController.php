@@ -49,8 +49,12 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        //
+        Gate::authorize('delete', $post);
+
+        $post->delete();
+
+        return response()->json(['message' => 'Post berhasil dihapus']);
     }
 }
