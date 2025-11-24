@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Services\PostService;
@@ -44,7 +45,17 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id) {}
+    public function update(UpdatePostRequest $request, Post $post)
+    {
+        $validated = $request->validated();
+
+        Gate::authorize('update', $post);
+
+        $post->update($validated);
+        $post->categories()->sync($validated['categories']);
+
+        return response()->json(['message' => 'Post berhasil diupdate']);
+    }
 
     /**
      * Remove the specified resource from storage.
