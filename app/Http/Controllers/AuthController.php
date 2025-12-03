@@ -22,12 +22,12 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        $request->validated();
+        $validated = $request->validated();
 
         $this->registrationService->initiateRegistration(
-            $request->name,
-            $request->email,
-            $request->password,
+            $validated['name'],
+            $validated['email'],
+            $validated['password'],
         );
 
         return response()->json([
@@ -37,10 +37,10 @@ class AuthController extends Controller
 
     public function confirm(ConfirmOtpRequest $request): JsonResponse
     {
-        $request->validated();
+        $validated = $request->validated();
 
         $result = $this->registrationService->completeRegistration(
-            $request->email,
+            $validated['email'],
         );
 
         return response()->json([
@@ -52,9 +52,9 @@ class AuthController extends Controller
 
     public function resend(ResendOtpRequest $request): JsonResponse
     {
-        $request->validated();
+        $validated = $request->validated();
 
-        $this->registrationService->resendOtp($request->email);
+        $this->registrationService->resendOtp($validated['email']);
 
         return response()->json([
             'message' => 'OTP baru telah dikirim ke email.',
@@ -63,10 +63,10 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $request->validated();
+        $validated = $request->validated();
 
         $result = $this->registrationService->login(
-            $request->email,
+            $validated['email'],
         );
 
         return response()->json([
