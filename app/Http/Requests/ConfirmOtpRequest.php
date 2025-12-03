@@ -35,10 +35,11 @@ class ConfirmOtpRequest extends FormRequest
         return [
             function (Validator $validator) {
                 $email = $this->input('email');
+                $otp = $this->input('otp');
 
-                $pending = RegistrationOtp::where('email', $email)->first();
+                $pending = RegistrationOtp::where('email', $email)->where('otp_code', $otp)->firstOrFail();
 
-                if ($pending && $pending->otp_expires_at && $pending->otp_expires_at->isPast()) {
+                if ($pending?->otp_expires_at?->isPast()) {
                     $validator->errors()->add('otp', 'Kode OTP kedaluwarsa.');
                 }
             },

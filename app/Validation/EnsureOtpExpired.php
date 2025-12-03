@@ -11,9 +11,9 @@ class EnsureOtpExpired
 
     public function __invoke(Validator $validator): void
     {
-        $pending = RegistrationOtp::where('email', $this->email)->firstOrFail();
+        $pending = RegistrationOtp::where('email', $this->email)->first();
 
-        if ($pending->otp_expires_at && !$pending->otp_expires_at->isPast()) {
+        if ($pending?->otp_expires_at?->isFuture()) {
             $validator->errors()->add(
                 'email',
                 'OTP belum kedaluwarsa. Harap tunggu hingga masa berlaku berakhir sebelum meminta OTP baru.'
