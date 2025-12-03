@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,7 +27,11 @@ Route::prefix('auth')->controller(AuthController::class)->name('auth.')->group(f
 Route::apiResource('posts', PostController::class)
     ->middleware(['auth:sanctum', 'throttle:content']);
 
+Route::apiResource('comments', CommentController::class)
+    ->middleware(['auth:sanctum', 'throttle:content'])->except(['index', 'show']);
 
+Route::controller(CommentController::class)->get('comments/{post}', 'index')
+    ->middleware(['auth:sanctum', 'throttle:content']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
